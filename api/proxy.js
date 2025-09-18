@@ -1,4 +1,3 @@
-// Vercel Proxy API
 export default async function handler(req, res) {
   const { path = "" } = req.query;
   const targetUrl = `https://farida.stepsio.com/${path}`;
@@ -6,16 +5,14 @@ export default async function handler(req, res) {
   try {
     const response = await fetch(targetUrl, {
       method: req.method,
-      headers: req.headers,
+      headers: req.headers, 
       body: ["GET", "HEAD"].includes(req.method) ? undefined : req.body,
     });
-
 
     response.headers.forEach((value, key) => {
       res.setHeader(key, value);
     });
 
-    //  CORS headers
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,HEAD");
     res.setHeader(
@@ -30,6 +27,7 @@ export default async function handler(req, res) {
     const buffer = await response.arrayBuffer();
     res.status(response.status).send(Buffer.from(buffer));
   } catch (err) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.status(500).json({ error: err.toString() });
   }
 }
